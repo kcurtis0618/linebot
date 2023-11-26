@@ -1,13 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jun  2 21:16:35 2021
-@author: Ivan
-版權屬於「行銷搬進大程式」所有，若有疑問，可聯絡ivanyang0606@gmail.com
 
-Line Bot聊天機器人
-第一章 Line Bot申請與串接
-Line Bot機器人串接與測試
-"""
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
 
@@ -26,6 +17,7 @@ line_bot_api = LineBotApi('MqnoFY4froFhOhpFxgpsL3YQTdqzrsd+glI6X6xIxfBk2rm1wGcFW
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('d6fff126b59d024cfd2daf367fc6db6f')
 
+#主動推播
 line_bot_api.push_message('Udd9d677bacb9d89bb80323b5c1c9a46a', TextSendMessage(text='你可以開始了'))
 
 
@@ -53,8 +45,12 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = TextSendMessage(text=event.message.text)
-    line_bot_api.reply_message(event.reply_token,message)
+    message = text = event.message.text
+    if re.math ('謝謝',message):
+        line_bot_api.reply_message(event.reply_token,TextSendMessage('我也很謝謝你欸'))
+    else:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+
 
 #主程式
 import os
