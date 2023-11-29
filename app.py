@@ -1,6 +1,6 @@
-
-#載入LineBot所需要的套件
+# 載入LineBot所需要的套件
 from flask import Flask, request, abort
+import re  # Import the regular expression module
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -8,7 +8,7 @@ from linebot import (
 from linebot.exceptions import (
     InvalidSignatureError
 )
-from linebot.models import *
+from linebot.models import MessageEvent, TextMessage, TextSendMessage  # Import the missing classes
 
 app = Flask(__name__)
 
@@ -17,7 +17,7 @@ line_bot_api = LineBotApi('MqnoFY4froFhOhpFxgpsL3YQTdqzrsd+glI6X6xIxfBk2rm1wGcFW
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('d6fff126b59d024cfd2daf367fc6db6f')
 
-#主動推播
+# 主動推播
 line_bot_api.push_message('Udd9d677bacb9d89bb80323b5c1c9a46a', TextSendMessage(text='你可以開始了'))
 
 
@@ -27,7 +27,6 @@ def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
- 
     # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
@@ -40,20 +39,21 @@ def callback():
 
     return 'OK'
 
- 
-#訊息傳遞區塊
+
+# 訊息傳遞區塊
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = text = event.message.text
-    if re.match ('謝謝',message):
-        line_bot_api.reply_message(event.reply_token,TextSendMessage('我也很謝謝你欸'))
+    if re.match('謝謝', message):
+        line_bot_api.reply_message(event.reply_token, TextSendMessage('我也很謝謝你欸'))
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 
 
-#主程式
+# 主程式
 import os
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+
