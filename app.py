@@ -46,7 +46,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = text = event.message.text
-    if re.math ('謝謝',message):
+    if re.match ('謝謝',message):
         line_bot_api.reply_message(event.reply_token,TextSendMessage('我也很謝謝你欸'))
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
