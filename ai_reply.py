@@ -1,17 +1,16 @@
-import openai
-# 打開檔案並讀取內容
+from openai import OpenAI# 打開檔案並讀取內容
 with open('key.txt', 'r') as file:
     content = file.read()
 
 # 找尋 "AI =" 後的字串
-ai_index = content.find('AI =')
+ai_index = content.find('AI = ')
 if ai_index != -1:
     # 取得 "AI =" 後面的字串
     ai_value = content[ai_index + 5:].strip()
 else:
     print("找不到 'AI ='")
 
-client = openai.OpenAI(api_key= ai_value)
+client = OpenAI(api_key=ai_value)
 
 def reply(t_input):
     # 使用OpenAI API生成文章標題和標籤
