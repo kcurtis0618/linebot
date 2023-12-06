@@ -66,11 +66,38 @@ def handle_message(event):
             )
         )
         line_bot_api.reply_message(event.reply_token, confirm_template_message)
+    elif re.match('你是誰？',message):
+        # 發送按鈕訊息寫在TemplateSendMessage()
+        buttom_template_message = TemplateSendMessage(
+            alt_text = 'Start toke flow, multiselection buttom',# 註記這個按鈕的功能簡介
+            template = ButtonsTemplate(
+                title = '青少年就學就業職訓機器人',# 按鈕上方大標題
+                text = '請點選下方功能', # 下方些微內文
+                action = [
+                    # 回傳用按鈕，可以在action的地方加入自己需要用的參數
+                    PostbackAction(
+                        label = '輸入個人資料',
+                        display_text = '感謝你的填寫',
+                        data = 'action=還沒有東西'
+                    ),
+                    # 回覆文字
+                    MessageAction(
+                        label = '我想與機器人對話～',
+                        text = '機器人出來吧！'
+                    ),
+                    # 連結
+                    URIAction(
+                        label = '這個網站感覺不錯',
+                        uri = 'https://www.im.ncnu.edu.tw/'
+                    )
+                ]
+            )
+        )
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 
 #主程式
 import os
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 8000))
+    port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
