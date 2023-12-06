@@ -73,7 +73,7 @@ def handle_message(event):
             template = ButtonsTemplate(
                 title = '青少年就學就業職訓機器人',# 按鈕上方大標題
                 text = '請點選下方功能', # 下方些微內文
-                action = [
+                actions = [
                     # 回傳用按鈕，可以在action的地方加入自己需要用的參數
                     PostbackAction(
                         label = '輸入個人資料',
@@ -93,6 +93,62 @@ def handle_message(event):
                 ]
             )
         )
+        line_bot_api.reply_message(event.reply_token, buttom_template_message)
+    elif ('多按鈕選擇樣板',message):
+        carousel_template_message = TemplateSendMessage(
+            alt_text='免費教學影片',
+            template=CarouselTemplate(
+                columns=[
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/wpM584d.jpg',
+                        title='Python基礎教學',
+                        text='萬丈高樓平地起',
+                        actions=[
+                            MessageAction(
+                                label='教學內容',
+                                text='拆解步驟詳細介紹安裝並使用Anaconda、Python、Spyder、VScode…'
+                            ),
+                            URIAction(
+                                label='馬上查看',
+                                uri='https://marketingliveincode.com/?page_id=270'
+                            )
+                        ]
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/W7nI6fg.jpg',
+                        title='Line Bot聊天機器人',
+                        text='台灣最廣泛使用的通訊軟體',
+                        actions=[
+                            MessageAction(
+                                label='教學內容',
+                                text='Line Bot申請與串接'
+                            ),
+                            URIAction(
+                                label='馬上查看',
+                                uri='https://marketingliveincode.com/?page_id=2532'
+                            )
+                        ]
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/l7rzfIK.jpg',
+                        title='Telegram Bot聊天機器人',
+                        text='唯有真正的方便，能帶來意想不到的價值',
+                        actions=[
+                            MessageAction(
+                                label='教學內容',
+                                text='Telegrame申請與串接'
+                            ),
+                            URIAction(
+                                label='馬上查看',
+                                uri='https://marketingliveincode.com/?page_id=2648'
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
+        line_bot_api.reply_message(event.reply_token, carousel_template_message)
+
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 
