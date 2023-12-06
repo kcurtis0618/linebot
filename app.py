@@ -94,7 +94,7 @@ def handle_message(event):
             )
         )
         line_bot_api.reply_message(event.reply_token, buttom_template_message)
-    elif ('多按鈕選擇樣板',message):
+    elif re.match('多按鈕選擇樣板',message):
         carousel_template_message = TemplateSendMessage(
             alt_text='免費教學影片',
             template=CarouselTemplate(
