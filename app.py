@@ -10,7 +10,7 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 #引用其他檔案
-import ai_reply
+# import ai_reply
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
@@ -46,12 +46,28 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = event.message.text
-    if re.match ('謝謝',message):
-        line_bot_api.reply_message(event.reply_token,TextSendMessage('我也很謝謝你欸'))
+    message = text=event.message.text
+    if re.match('告訴我秘密',message):
+        confirm_template_message = TemplateSendMessage(
+            alt_text='問問題',
+            template=ConfirmTemplate(
+                text='你喜這堂課嗎？',
+                actions=[
+                    PostbackAction(
+                        label='喜歡',
+                        display_text='超喜歡',
+                        data='action=其實不喜歡'
+                    ),
+                    MessageAction(
+                        label='愛',
+                        text='愛愛❤'
+                    )
+                ]
+            )
+        )
+        line_bot_api.reply_message(event.reply_token, confirm_template_message)
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(ai_reply.reply(message)))
-
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 
 #主程式
 import os
