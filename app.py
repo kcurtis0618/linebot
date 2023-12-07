@@ -111,6 +111,11 @@ def handle_message(event):
                             URIAction(
                                 label='馬上查看',
                                 uri='https://marketingliveincode.com/?page_id=270'
+                            ),
+                            PostbackAction(
+                                label = '輸入個人資料',
+                                display_text = '感謝你的填寫',
+                                data = 'action=還沒有東西'
                             )
                         ]
                     ),
@@ -126,6 +131,11 @@ def handle_message(event):
                             URIAction(
                                 label='馬上查看',
                                 uri='https://marketingliveincode.com/?page_id=2532'
+                            ),
+                            PostbackAction(
+                                label = '輸入個人資料',
+                                display_text = '感謝你的填寫',
+                                data = 'action=還沒有東西'
                             )
                         ]
                     ),
