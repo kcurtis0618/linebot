@@ -57,7 +57,7 @@ def handle_message(event):
                 actions = [
                     # 回傳用按鈕，可以在action的地方加入自己需要用的參數
                     PostbackAction(
-                        label = '填寫會員資料，獲取最新消息',
+                        label = '填寫會員資料',
                         display_text = '確認按鈕',
                         data = 'action=感謝你的填寫'
                     ),
@@ -68,7 +68,7 @@ def handle_message(event):
                     ),
                     # 連結
                     URIAction(
-                        label = '我想與機器人對話（目前是ncnu im url）',
+                        label = '目前是ncnu im url',
                         uri = 'https://www.im.ncnu.edu.tw/'
                     )
                 ]
