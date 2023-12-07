@@ -56,10 +56,9 @@ def handle_message(event):
                 text = '請點選下方功能', # 下方些微內文
                 actions = [
                     # 回傳用按鈕，可以在action的地方加入自己需要用的參數
-                    PostbackAction(
+                    MessageAction(
                         label = '填寫會員資料',
-                        display_text = '確認按鈕',
-                        data = 'action=感謝你的填寫'
+                        text = '確認按鈕',
                     ),
                     # 回覆文字
                     MessageAction(
