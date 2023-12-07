@@ -47,7 +47,35 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = text=event.message.text
-    if re.match('告訴我秘密',message):
+    if re.match('嗨',message):
+        # 發送按鈕訊息寫在TemplateSendMessage()
+        buttom_template_message = TemplateSendMessage(
+            alt_text = 'Start talk flow, multiselection buttom',# 註記這個按鈕的功能簡介
+            template = ButtonsTemplate(
+                title = '青少年就學就業職訓機器人',# 按鈕上方大標題
+                text = '請點選下方功能', # 下方些微內文
+                actions = [
+                    # 回傳用按鈕，可以在action的地方加入自己需要用的參數
+                    PostbackAction(
+                        label = '填寫會員資料，獲取最新消息',
+                        display_text = '確認按鈕',
+                        data = 'action=感謝你的填寫'
+                    ),
+                    # 回覆文字
+                    MessageAction(
+                        label = '最新消息',
+                        text = '多按鈕選擇樣板'
+                    ),
+                    # 連結
+                    URIAction(
+                        label = '我想與機器人對話（目前是ncnu im url）',
+                        uri = 'https://www.im.ncnu.edu.tw/'
+                    )
+                ]
+            )
+        )
+        line_bot_api.reply_message(event.reply_token, buttom_template_message)
+    elif re.match('確認按鈕',message):
         confirm_template_message = TemplateSendMessage(
             alt_text='問問題',
             template=ConfirmTemplate(
@@ -66,34 +94,6 @@ def handle_message(event):
             )
         )
         line_bot_api.reply_message(event.reply_token, confirm_template_message)
-    elif re.match('你是誰？',message):
-        # 發送按鈕訊息寫在TemplateSendMessage()
-        buttom_template_message = TemplateSendMessage(
-            alt_text = 'Start toke flow, multiselection buttom',# 註記這個按鈕的功能簡介
-            template = ButtonsTemplate(
-                title = '青少年就學就業職訓機器人',# 按鈕上方大標題
-                text = '請點選下方功能', # 下方些微內文
-                actions = [
-                    # 回傳用按鈕，可以在action的地方加入自己需要用的參數
-                    PostbackAction(
-                        label = '輸入個人資料',
-                        display_text = '感謝你的填寫',
-                        data = 'action=還沒有東西'
-                    ),
-                    # 回覆文字
-                    MessageAction(
-                        label = '我想與機器人對話～',
-                        text = '機器人出來吧！'
-                    ),
-                    # 連結
-                    URIAction(
-                        label = '這個網站感覺不錯',
-                        uri = 'https://www.im.ncnu.edu.tw/'
-                    )
-                ]
-            )
-        )
-        line_bot_api.reply_message(event.reply_token, buttom_template_message)
     elif re.match('多按鈕選擇樣板',message):
         carousel_template_message = TemplateSendMessage(
             alt_text='免費教學影片',
