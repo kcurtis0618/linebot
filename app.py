@@ -100,7 +100,7 @@ def handle_message(event):
             template=CarouselTemplate(
                 columns=[
                     CarouselColumn(
-                        thumbnail_image_url='https://i.imgur.com/wpM584d.jpg',
+                        thumbnail_image_url='https://i.imgur.com/KLpBBsV.jpg',
                         title='Python基礎教學',
                         text='萬丈高樓平地起',
                         actions=[
@@ -130,17 +130,22 @@ def handle_message(event):
                         ]
                     ),
                     CarouselColumn(
-                        thumbnail_image_url='https://i.imgur.com/l7rzfIK.jpg',
-                        title='Telegram Bot聊天機器人',
-                        text='唯有真正的方便，能帶來意想不到的價值',
+                        thumbnail_image_url='https://i.imgur.com/NDfQ43S.jpg',
+                        title='青年第一讚',
+                        text='用主題探索青年資源',
                         actions=[
                             MessageAction(
-                                label='教學內容',
-                                text='Telegrame申請與串接'
+                                label='功用簡介',
+                                text='點選按鈕查看資源'
                             ),
                             URIAction(
-                                label='馬上查看',
-                                uri='https://marketingliveincode.com/?page_id=2648'
+                                label='詳細內容',
+                                uri='https://youthfirst.yda.gov.tw/'
+                            ),
+                            PostbackAction(
+                                label = '輸入個人資料',
+                                display_text = '感謝你的填寫',
+                                data = 'action=還沒有東西'
                             )
                         ]
                     )
