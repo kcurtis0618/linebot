@@ -171,12 +171,13 @@ def handle_message(event):
 
         else: #對話結束
             line_bot_api.push_message(your_id, TextMessage(text='感謝您的回覆~'))
-            user_state[user_id]["state"] = "Normal"
+            user_state[user_id]["state"] = "Normal" #將狀態調回正常狀態
             user_state[user_id]["workflow"] = 0
 
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 
+#利用postback按鈕可以設計一些當按下按鈕後的動作
 @handler.add(PostbackEvent)
 def handle_postback(event):
     user_id = event.source.user_id
@@ -184,7 +185,28 @@ def handle_postback(event):
 
     if data == 'action=register_member':
         user_state[user_id]["state"] = "Member"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請開始填寫會員資料"))
+        #確認是否要填寫確認會員資料
+        confirm_template_message = TemplateSendMessage(
+                alt_text='確認是否要填寫確認會員資料',
+                template=ConfirmTemplate(
+                    text='確認是否要填寫確認會員資料',
+                    actions=[
+                        MessageAction(
+                            label='是',
+                            text='開始填寫'
+                        ),
+                        PostbackAction(
+                            label='不是',
+                            display_text='取消填寫會員資料',
+                            data='action = 後悔填寫'
+                        )
+                    ]
+                )
+            )
+        line_bot_api.reply_message(event.reply_token, confirm_template_message)
+        
+    elif data == 'action = 後悔填寫':
+        user_state[user_id]["state"] = "Normal"
 
 #主程式
 import os
