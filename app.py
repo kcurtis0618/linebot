@@ -171,6 +171,7 @@ def handle_message(event):
 
         else: #對話結束
             line_bot_api.push_message(your_id, TextMessage(text='感謝您的回覆~'))
+            user_state[user_id]["state"] = "Normal"
             user_state[user_id]["workflow"] = 0
 
     else:
