@@ -40,11 +40,9 @@ end_template_message = TemplateSendMessage(
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
-
- 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+    # app.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
@@ -80,7 +78,7 @@ def handle_message(event):
                     ]
                 )
             )
-            line_bot_api.reply_message(event.reply_token, button_template_message)
+            reply_message.append(button_template_message)
         elif re.match('確認按鈕',message):
             confirm_template_message = TemplateSendMessage(
                 alt_text='問問題',
