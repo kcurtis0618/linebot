@@ -49,49 +49,26 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_id = event.source.user_id
-    message = text=event.message.text
-    data = event.postback.data
+    message = event.message.text
 
-    # 檢查用戶是否有現有的對話狀態
     if user_id not in user_state:
-        user_state[user_id] = {
-            "state": "Normal", # 使用者狀態
-            "workflow" : 0, # 目前對話流程
-        }
-    
-    # 處裡postback回來的動作
-    if data == 'action=register_member':
-        user_state[user_id]["state"] = "Member"
+        user_state[user_id] = {"state": "Normal", "workflow": 0}
 
     if user_state[user_id]["state"] == "Normal":
-        if re.match('嗨',message):
-            # 發送按鈕訊息寫在TemplateSendMessage()
-            buttom_template_message = TemplateSendMessage(
-                alt_text = 'Start talk flow, multiselection buttom',# 註記這個按鈕的功能簡介
-                template = ButtonsTemplate(
-                    title = '青少年就學就業職訓機器人',# 按鈕上方大標題
-                    text = '請點選下方功能', # 下方些微內文
-                    actions = [
-                        # 回傳用按鈕，可以在action的地方加入自己需要用的參數
-                        PostbackAction(
-                            label = '填寫會員資料',
-                            text = '確認按鈕',
-                            data = 'action=register_member',
-                        ),
-                        # 回覆文字
-                        MessageAction(
-                            label = '最新消息',
-                            text = '多按鈕選擇樣板'
-                        ),
-                        # 連結
-                        URIAction(
-                            label = '目前是ncnu im url',
-                            uri = 'https://www.im.ncnu.edu.tw/'
-                        )
+        if re.match('嗨', message):
+            button_template_message = TemplateSendMessage(
+                alt_text='Start talk flow, multiselection button',
+                template=ButtonsTemplate(
+                    title='青少年就學就業職訓機器人',
+                    text='請點選下方功能',
+                    actions=[
+                        PostbackAction(label='填寫會員資料', data='action=register_member'),
+                        MessageAction(label='最新消息', text='多按鈕選擇樣板'),
+                        URIAction(label='目前是ncnu im url', uri='https://www.im.ncnu.edu.tw/')
                     ]
                 )
             )
-            line_bot_api.reply_message(event.reply_token, buttom_template_message)
+            line_bot_api.reply_message(event.reply_token, button_template_message)
         elif re.match('確認按鈕',message):
             confirm_template_message = TemplateSendMessage(
                 alt_text='問問題',
@@ -182,22 +159,31 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, carousel_template_message)
         # elif re.match('機器人對話',message):
         #     while message != '謝謝':
-        elif user_state[user_id]["state"] == "Member":
-            # 收集會員資料的對話流程
-            if user_state[user_id]["workflow"] == 0 :
-                line_bot_api.push_message(your_id, TextMessage(text='你的姓名是'))
-                user_state[user_id]["workflow"] +=1
+    elif user_state[user_id]["state"] == "Member":
+        # 收集會員資料的對話流程
+        if user_state[user_id]["workflow"] == 0 :
+            line_bot_api.push_message(your_id, TextMessage(text='你的姓名是'))
+            user_state[user_id]["workflow"] +=1
 
-            elif user_state[user_id]["workflow"] == 1:
-                line_bot_api.push_message(your_id, TextMessage(text='您的可用信箱是'))
-                user_state[user_id]["workflow"] +=1
+        elif user_state[user_id]["workflow"] == 1:
+            line_bot_api.push_message(your_id, TextMessage(text='您的可用信箱是'))
+            user_state[user_id]["workflow"] +=1
 
-            else: #對話結束
-                line_bot_api.push_message(your_id, TextMessage(text='感謝您的回覆~'))
-                user_state[user_id]["workflow"] = 0
+        else: #對話結束
+            line_bot_api.push_message(your_id, TextMessage(text='感謝您的回覆~'))
+            user_state[user_id]["workflow"] = 0
 
-        else:
-            line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+    else:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    user_id = event.source.user_id
+    data = event.postback.data
+
+    if data == 'action=register_member':
+        user_state[user_id]["state"] = "Member"
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請開始填寫會員資料"))
 
 #主程式
 import os
