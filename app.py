@@ -61,7 +61,6 @@ def callback():
 def handle_message(event):
     user_id = event.source.user_id
     message = event.message.text
-
     reply_message = []
 
     if user_id not in user_state:
@@ -170,8 +169,8 @@ def handle_message(event):
                     ]
                 )
             )
-            line_bot_api.reply_message(event.reply_token, carousel_template_message)
-            line_bot_api.push_message(your_id, end_template_message)
+            reply_message.append(carousel_template_message)
+            reply_message.append(end_template_message)
         # elif re.match('機器人對話',message):
         #     while message != '謝謝':
     elif user_state[user_id]["state"] == "Member":
@@ -185,10 +184,10 @@ def handle_message(event):
             user_state[user_id]["workflow"] +=1
 
         else: #對話結束
-            line_bot_api.push_message(your_id, TextMessage(text='感謝您的回覆~'))
+            reply_message.append(TextMessage(text='感謝您的回覆~'))
             user_state[user_id]["state"] = "Normal" #將狀態調回正常狀態
             user_state[user_id]["workflow"] = 0
-            line_bot_api.push_message(your_id, end_template_message)
+            reply_message.append(end_template_message)
 
     else:
         line_bot_api.reply_message(event.reply_token, TextMessage(text='不太理解你的意思喔～'))
@@ -200,6 +199,7 @@ def handle_message(event):
 def handle_postback(event):
     user_id = event.source.user_id
     data = event.postback.data
+    reply_messages = []
 
     if data == 'action=register_member':
         user_state[user_id]["state"] = "Member"
@@ -221,11 +221,15 @@ def handle_postback(event):
                     ]
                 )
             )
-        line_bot_api.reply_message(event.reply_token, confirm_template_message)
-        
-    elif data == 'action = 後悔填寫':
+        reply_messages.append(confirm_template_message)
+    
+    elif data == 'action=後悔填寫':
         user_state[user_id]["state"] = "Normal"
-        line_bot_api.push_message(your_id, end_template_message)
+        reply_messages.append(end_template_message)
+
+    if reply_messages:
+        line_bot_api.reply_message(event.reply_token, reply_messages)
+
 
 #主程式
 import os
