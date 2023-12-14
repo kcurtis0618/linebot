@@ -50,12 +50,24 @@ def callback():
 def handle_message(event):
     user_id = event.source.user_id
     message = event.message.text
+    
+    #End Template
+    end_template_message = TemplateSendMessage(
+        alt_text='問問題',
+        template=ConfirmTemplate(
+            text='是否繼續使用服務',
+            actions=[
+                MessageAction(label='是',display_text='繼續使用服務'),
+                MessageAction(label='否',text='希望本次服務隊您有幫助！')
+                    ]
+                )
+            )
 
     if user_id not in user_state:
         user_state[user_id] = {"state": "Normal", "workflow": 0}
 
     if user_state[user_id]["state"] == "Normal":
-        if re.match('嗨', message):
+        if re.match('嗨', message) or re.match('繼續使用本服務',message):
             button_template_message = TemplateSendMessage(
                 alt_text='Start talk flow, multiselection button',
                 template=ButtonsTemplate(
@@ -175,7 +187,7 @@ def handle_message(event):
             user_state[user_id]["workflow"] = 0
 
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+        line_bot_api.reply_message(event.reply_token, TextMessage(text='不太理解你的意思喔～'))
 
 #利用postback按鈕可以設計一些當按下按鈕後的動作
 @handler.add(PostbackEvent)
