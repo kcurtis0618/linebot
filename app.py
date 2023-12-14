@@ -102,7 +102,7 @@ def handle_message(event):
                 )
             )
             line_bot_api.reply_message(event.reply_token, confirm_template_message)
-            line_bot_api.push_message(your_id, end_template_message)
+            line_bot_api.reply_message(event.reply_token, end_template_message)
         elif re.match('多按鈕選擇樣板',message):
             carousel_template_message = TemplateSendMessage(
                 alt_text='免費教學影片',
@@ -172,7 +172,7 @@ def handle_message(event):
                 )
             )
             line_bot_api.reply_message(event.reply_token, carousel_template_message)
-            line_bot_api.push_message(your_id, end_template_message)
+            line_bot_api.reply_message(event.reply_token, end_template_message)
         # elif re.match('機器人對話',message):
         #     while message != '謝謝':
     elif user_state[user_id]["state"] == "Member":
@@ -193,7 +193,7 @@ def handle_message(event):
 
     else:
         line_bot_api.reply_message(event.reply_token, TextMessage(text='不太理解你的意思喔～'))
-        line_bot_api.push_message(your_id, end_template_message)
+        line_bot_api.reply_message(event.reply_token, end_template_message)
 
 #利用postback按鈕可以設計一些當按下按鈕後的動作
 @handler.add(PostbackEvent)
