@@ -24,6 +24,18 @@ line_bot_api.push_message(your_id, TextMessage(text='你可以開始了'))
 #使用者回復狀態
 user_state = {}
 
+#End Template
+end_template_message = TemplateSendMessage(
+    alt_text='問問題',
+    template=ConfirmTemplate(
+        text='是否繼續使用服務',
+        actions=[
+            MessageAction(label='是',display_text='繼續使用服務'),
+            MessageAction(label='否',text='希望本次服務隊您有幫助！')
+                ]
+            )
+        )
+
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -51,17 +63,7 @@ def handle_message(event):
     user_id = event.source.user_id
     message = event.message.text
     
-    #End Template
-    end_template_message = TemplateSendMessage(
-        alt_text='問問題',
-        template=ConfirmTemplate(
-            text='是否繼續使用服務',
-            actions=[
-                MessageAction(label='是',display_text='繼續使用服務'),
-                MessageAction(label='否',text='希望本次服務隊您有幫助！')
-                    ]
-                )
-            )
+
 
     if user_id not in user_state:
         user_state[user_id] = {"state": "Normal", "workflow": 0}
@@ -100,6 +102,7 @@ def handle_message(event):
                 )
             )
             line_bot_api.reply_message(event.reply_token, confirm_template_message)
+            line_bot_api.push_message(your_id, end_template_message)
         elif re.match('多按鈕選擇樣板',message):
             carousel_template_message = TemplateSendMessage(
                 alt_text='免費教學影片',
@@ -169,6 +172,7 @@ def handle_message(event):
                 )
             )
             line_bot_api.reply_message(event.reply_token, carousel_template_message)
+            line_bot_api.push_message(your_id, end_template_message)
         # elif re.match('機器人對話',message):
         #     while message != '謝謝':
     elif user_state[user_id]["state"] == "Member":
@@ -185,9 +189,11 @@ def handle_message(event):
             line_bot_api.push_message(your_id, TextMessage(text='感謝您的回覆~'))
             user_state[user_id]["state"] = "Normal" #將狀態調回正常狀態
             user_state[user_id]["workflow"] = 0
+            line_bot_api.push_message(your_id, end_template_message)
 
     else:
         line_bot_api.reply_message(event.reply_token, TextMessage(text='不太理解你的意思喔～'))
+        line_bot_api.push_message(your_id, end_template_message)
 
 #利用postback按鈕可以設計一些當按下按鈕後的動作
 @handler.add(PostbackEvent)
@@ -219,6 +225,7 @@ def handle_postback(event):
         
     elif data == 'action = 後悔填寫':
         user_state[user_id]["state"] = "Normal"
+        line_bot_api.push_message(your_id, end_template_message)
 
 #主程式
 import os
