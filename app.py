@@ -185,7 +185,7 @@ def handle_message(event):
             reply_message.append(TextMessage(text='感謝您的回覆~'))
             user_state[user_id]["state"] = "Normal" #將狀態調回正常狀態
             user_state[user_id]["workflow"] = 0
-            reply_message.append(end_template_message)
+            reply_message.append(TextMessage(text='嘿嘿～'))
 
     else:
         line_bot_api.reply_message(event.reply_token, TextMessage(text='不太理解你的意思喔～'))

@@ -1,0 +1,4 @@
+﻿12/14 編輯紀錄
+Reply_message.append 按鈕無法合併回傳，文字如何append
+
+解決方法用loop輪流回傳
