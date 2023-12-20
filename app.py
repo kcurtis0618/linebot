@@ -56,7 +56,7 @@ def handle_message(event):
         template=ConfirmTemplate(
             text='是否繼續使用服務',
             actions=[
-                MessageAction(label='是', display_text='繼續使用服務'),
+                MessageAction(label='是', text='繼續使用服務'),
                 MessageAction(label='否', text='希望本次服務隊您有幫助！')
             ]
         )
