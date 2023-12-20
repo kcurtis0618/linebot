@@ -199,6 +199,9 @@ def handle_postback(event):
     data = event.postback.data
     reply_messages = []
 
+    if user_id not in user_state:
+        user_state[user_id] = {"state": "Normal", "workflow": 0}
+        
     if data == 'action=register_member':
         user_state[user_id]["state"] = "Member"
         #確認是否要填寫確認會員資料
