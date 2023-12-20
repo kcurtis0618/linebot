@@ -24,17 +24,7 @@ line_bot_api.push_message(your_id, TextMessage(text='你可以開始了'))
 #使用者回復狀態
 user_state = {}
 
-#End Template
-end_template_message = TemplateSendMessage(
-    alt_text='問問題',
-    template=ConfirmTemplate(
-        text='是否繼續使用服務',
-        actions=[
-            MessageAction(label='是',display_text='繼續使用服務'),
-            MessageAction(label='否',text='希望本次服務隊您有幫助！')
-                ]
-            )
-        )
+
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -60,6 +50,17 @@ def handle_message(event):
     user_id = event.source.user_id
     message = event.message.text
     reply_message = []
+
+    end_template_message = TemplateSendMessage(
+        alt_text='問問題',
+        template=ConfirmTemplate(
+            text='是否繼續使用服務',
+            actions=[
+                MessageAction(label='是', display_text='繼續使用服務'),
+                MessageAction(label='否', text='希望本次服務隊您有幫助！')
+            ]
+        )
+    )
 
     if user_id not in user_state:
         user_state[user_id] = {"state": "Normal", "workflow": 0}
@@ -226,7 +227,7 @@ def handle_postback(event):
     
     elif data == 'action=後悔填寫':
         user_state[user_id]["state"] = "Normal"
-        reply_messages.append(end_template_message)
+        # reply_messages.append(end_template_message)
 
     if reply_messages:
         line_bot_api.reply_message(event.reply_token, reply_messages)
