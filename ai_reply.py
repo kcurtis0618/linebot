@@ -5,6 +5,7 @@ with open('key.txt', 'r') as file:
 client = OpenAI(api_key=content)
 
 def reply(t_input):
+    print(content)
     # 使用OpenAI API生成文章標題和標籤
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
