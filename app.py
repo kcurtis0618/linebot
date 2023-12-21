@@ -81,6 +81,10 @@ def handle_message(event):
             )
             reply_message.append(button_template_message)
         
+        elif re.match('1',message):
+            res = ai_reply.reply('你是誰啊？')
+            line_bot_api.reply_message(event.reply_token, TextMessage(text=res))
+
         #最新消息
         elif re.match('獲得最新消息',message):
             carousel_template_message = TemplateSendMessage(
