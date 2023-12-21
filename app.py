@@ -75,7 +75,7 @@ def handle_message(event):
                     actions=[
                         PostbackAction(label='填寫會員資料', data='action=register_member'),
                         MessageAction(label='最新消息', text='獲得最新消息'),
-                        URIAction(label='目前是ncnu im url', uri='https://www.im.ncnu.edu.tw/')
+                        PostbackAction(label='我想與機器人對話', data='action=robot'),
                     ]
                 )
             )
@@ -151,6 +151,8 @@ def handle_message(event):
                 )
             )
             reply_message.append(carousel_template_message)
+            reply_message.append(end_template_message)
+
     
     #填寫會員資料
     elif user_state[user_id]["state"] == "Member":
@@ -167,9 +169,9 @@ def handle_message(event):
             reply_message.append(TextMessage(text='感謝您的回覆~'))
             user_state[user_id]["state"] = "Normal" #將狀態調回正常狀態
             user_state[user_id]["workflow"] = 0
-    
+        reply_message.append(end_template_message)
 
-    reply_message.append(end_template_message)
+
 
     #最後輸出
     if reply_message:
@@ -200,6 +202,9 @@ def handle_postback(event):
             )
         reply_message.append(confirm_template_message)
     
+    elif data == 'action=robot':
+        reply_message.append(TextMessage(text='你好我是機器人'))
+
     elif data == 'action=後悔填寫':
         user_state[user_id]["state"] = "Normal"
 
