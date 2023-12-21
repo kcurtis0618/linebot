@@ -18,7 +18,7 @@ def reply(t_input):
         # 提取生成的回复
         generated_text = response['choices'][0]['message']['content']
         return generated_text
-    except openai.error.OpenAIError as e:
+    except openai.OpenAIError as e:
         # 处理OpenAI特定的错误
         print(f"OpenAI error: {e}")
     except Exception as e:
