@@ -6,7 +6,7 @@ with open('key.txt', 'r') as file:
 
 def reply(t_input):
     try:
-        # 使用OpenAI API生成文章標題和標籤
+        # 使用OpenAI API生成回复
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -19,7 +19,7 @@ def reply(t_input):
         generated_text = response['choices'][0]['message']['content']
         return generated_text
     except openai.error.OpenAIError as e:
-        # 处理OpenAI错误
+        # 处理OpenAI特定的错误
         print(f"OpenAI error: {e}")
     except Exception as e:
         # 处理其他可能的错误
