@@ -66,7 +66,7 @@ def handle_message(event):
     
     #初始按鈕
     if user_state[user_id]["state"] == "Normal":
-        if re.match('嗨', message) or re.match('繼續使用本服務',message):
+        if re.match('嗨', message) or re.match('繼續使用服務',message):
             button_template_message = TemplateSendMessage(
                 alt_text='Start talk flow, multiselection button',
                 template=ButtonsTemplate(
