@@ -24,6 +24,16 @@ line_bot_api.push_message(your_id, TextMessage(text='你可以開始了'))
 #使用者回復狀態
 user_state = {}
 
+end_template_message = TemplateSendMessage(
+    alt_text='問問題',
+    template=ConfirmTemplate(
+        text='是否繼續使用服務',
+        actions=[
+            MessageAction(label='是', text='繼續使用服務'),
+            MessageAction(label='否', text='希望本次服務隊您有幫助！')
+        ]
+    )
+)
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -42,29 +52,19 @@ def callback():
 
     return 'OK'
 
- 
-#訊息傳遞區塊
+ #訊息傳遞區塊
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_id = event.source.user_id
     message = event.message.text
-    reply_message = []
-
-    end_template_message = TemplateSendMessage(
-        alt_text='問問題',
-        template=ConfirmTemplate(
-            text='是否繼續使用服務',
-            actions=[
-                MessageAction(label='是', text='繼續使用服務'),
-                MessageAction(label='否', text='希望本次服務隊您有幫助！')
-            ]
-        )
-    )
-
+    reply_message = []#統一用來裝欲回覆的訊息
+    
+    #使用者狀態
     if user_id not in user_state:
         user_state[user_id] = {"state": "Normal", "workflow": 0}
-
+    
+    #初始按鈕
     if user_state[user_id]["state"] == "Normal":
         if re.match('嗨', message) or re.match('繼續使用本服務',message):
             button_template_message = TemplateSendMessage(
@@ -74,33 +74,15 @@ def handle_message(event):
                     text='請點選下方功能',
                     actions=[
                         PostbackAction(label='填寫會員資料', data='action=register_member'),
-                        MessageAction(label='最新消息', text='多按鈕選擇樣板'),
+                        MessageAction(label='最新消息', text='獲得最新消息'),
                         URIAction(label='目前是ncnu im url', uri='https://www.im.ncnu.edu.tw/')
                     ]
                 )
             )
             reply_message.append(button_template_message)
-        elif re.match('確認按鈕',message):
-            confirm_template_message = TemplateSendMessage(
-                alt_text='問問題',
-                template=ConfirmTemplate(
-                    text='你喜這堂課嗎？',
-                    actions=[
-                        PostbackAction(
-                            label='喜歡',
-                            display_text='超喜歡',
-                            data='action=其實不喜歡'
-                        ),
-                        MessageAction(
-                            label='愛',
-                            text='愛愛❤'
-                        )
-                    ]
-                )
-            )
-            reply_message.append(confirm_template_message)
-            reply_message.append(end_template_message)
-        elif re.match('多按鈕選擇樣板',message):
+        
+        #最新消息
+        elif re.match('獲得最新消息',message):
             carousel_template_message = TemplateSendMessage(
                 alt_text='免費教學影片',
                 template=CarouselTemplate(
@@ -169,38 +151,36 @@ def handle_message(event):
                 )
             )
             reply_message.append(carousel_template_message)
-            reply_message.append(end_template_message)
-        # elif re.match('機器人對話',message):
-        #     while message != '謝謝':
+    
+    #填寫會員資料
     elif user_state[user_id]["state"] == "Member":
         # 收集會員資料的對話流程
         if user_state[user_id]["workflow"] == 0 :
-            line_bot_api.push_message(your_id, TextMessage(text='你的姓名是'))
+            reply_message.append(TextMessage(text='你的姓名是'))
             user_state[user_id]["workflow"] +=1
 
         elif user_state[user_id]["workflow"] == 1:
-            line_bot_api.push_message(your_id, TextMessage(text='您的可用信箱是'))
+            reply_message.append(TextMessage(text='您的可用信箱是'))
             user_state[user_id]["workflow"] +=1
 
         else: #對話結束
             reply_message.append(TextMessage(text='感謝您的回覆~'))
             user_state[user_id]["state"] = "Normal" #將狀態調回正常狀態
             user_state[user_id]["workflow"] = 0
-            reply_message.append(end_template_message)
-            reply_message.append(end_template_message)
+    
 
-    else:
-        line_bot_api.reply_message(event.reply_token, TextMessage(text='不太理解你的意思喔～'))
-        line_bot_api.push_message(your_id, end_template_message)
+    reply_message.append(end_template_message)
+
+    #最後輸出
     if reply_message:
-        print(reply_message)
         line_bot_api.reply_message(event.reply_token, reply_message)
+
 #利用postback按鈕可以設計一些當按下按鈕後的動作
 @handler.add(PostbackEvent)
 def handle_postback(event):
     user_id = event.source.user_id
     data = event.postback.data
-    reply_messages = []
+    reply_message = []
 
     if user_id not in user_state:
         user_state[user_id] = {"state": "Normal", "workflow": 0}
@@ -213,26 +193,20 @@ def handle_postback(event):
                 template=ConfirmTemplate(
                     text='確認是否要填寫確認會員資料',
                     actions=[
-                        MessageAction(
-                            label='是',
-                            text='開始填寫'
-                        ),
-                        PostbackAction(
-                            label='不是',
-                            display_text='取消填寫會員資料',
-                            data='action = 後悔填寫'
-                        )
+                        MessageAction(label='是',text='開始填寫'),
+                        PostbackAction(label='不是',display_text='取消填寫會員資料',data='action = 後悔填寫')
                     ]
                 )
             )
-        reply_messages.append(confirm_template_message)
+        reply_message.append(confirm_template_message)
     
     elif data == 'action=後悔填寫':
         user_state[user_id]["state"] = "Normal"
-        # reply_messages.append(end_template_message)
 
-    if reply_messages:
-        line_bot_api.reply_message(event.reply_token, reply_messages)
+    reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
+    
+    if reply_message:
+        line_bot_api.reply_message(event.reply_token, reply_message)
 
 
 #主程式
