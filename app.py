@@ -204,11 +204,14 @@ def handle_postback(event):
     
     elif data == 'action=robot':
         reply_message.append(TextMessage(text='你好我是機器人'))
+        reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
+
 
     elif data == 'action=後悔填寫':
         user_state[user_id]["state"] = "Normal"
+        reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
 
-    reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
+
     
     if reply_message:
         line_bot_api.reply_message(event.reply_token, reply_message)
