@@ -1,6 +1,6 @@
 from openai import OpenAI# 打開檔案並讀取內容
 with open('key.txt', 'r') as file:
-    content = file.read()
+    content = file.readline()
     
 client = OpenAI(api_key=content)
 

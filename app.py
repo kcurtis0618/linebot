@@ -10,7 +10,7 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 #引用其他檔案
-# import ai_reply
+import ai_reply
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
@@ -203,7 +203,7 @@ def handle_postback(event):
         reply_message.append(confirm_template_message)
     
     elif data == 'action=robot':
-        reply_message.append(TextMessage(text='你好我是機器人'))
+        reply_message.append(TextMessage(text=ai_reply.reply('你是誰啊？')))
         reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
 
 
