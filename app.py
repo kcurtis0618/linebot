@@ -51,8 +51,14 @@ def GPT_response(text):
         {"role": "user", "content": text}  # 將您的自行輸入字串放在這裡
         ]
     )
-    # 提取回應中的文本部分
-    response_text = response['choices'][0]['message']['content'] if response['choices'] else "Sorry, I couldn't generate a response."
+    # Convert the response to a dictionary if it's not already
+    response_dict = response if isinstance(response, dict) else response.to_dict()
+
+    # Extracting the text content from the response
+    try:
+        response_text = response_dict['choices'][0]['message']['content'] if response_dict.get('choices') else "Sorry, I couldn't generate a response."
+    except (IndexError, KeyError, TypeError):
+        response_text = "Sorry, there was an error processing the response."
 
     return response_text
 
