@@ -102,7 +102,7 @@ def handle_message(event):
             reply_message.append(button_template_message)
         
         elif re.match('1',message):
-            line_bot_api.reply_message(event.reply_token, TextMessage(text=GPT_response(message)))
+            line_bot_api.reply_message(event.reply_token, TextMessage(text=GPT_response("你是誰啊？")))
 
         #最新消息
         elif re.match('獲得最新消息',message):
