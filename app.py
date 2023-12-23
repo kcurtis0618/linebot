@@ -104,8 +104,13 @@ def handle_message(event):
             reply_message.append(button_template_message)
         
         elif re.match('1',message):
-            res = GPT_response("你是誰啊？")
-            line_bot_api.reply_message(event.reply_token, TextMessage(res))
+            reply_text = GPT_response("你是誰啊？")
+            if reply_text.strip():  # 檢查回文是否為空
+                line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_text))
+            else:
+                # 處理空回文的情況，例如記錄錯誤、發送預設消息等
+                print("Received an empty response from GPT-3.")
+
 
         #最新消息
         elif re.match('獲得最新消息',message):
