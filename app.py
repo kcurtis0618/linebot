@@ -51,17 +51,10 @@ def GPT_response(text):
             {"role": "user", "content": text}
         ]
     )
-    
-    # 將 ChatCompletion 對象轉換為字典
-    response_dict = response.to_dict() if hasattr(response, 'to_dict') else {}
 
-    # 嘗試從轉換後的字典中提取所需的回應文本
-    try:
-        response_text = response_dict.get('choices', [{}])[0].get('message', {}).get('content', "Sorry, I couldn't generate a response.")
-    except (IndexError, KeyError, TypeError):
-        response_text = "Sorry, there was an error processing the response."
-
-    return response_text
+    # 提取生成的文章標題和標籤
+    generated_text = response.choices[0].message.content
+    return generated_text
 
 
 # 監聽所有來自 /callback 的 Post Request
@@ -111,7 +104,8 @@ def handle_message(event):
             reply_message.append(button_template_message)
         
         elif re.match('1',message):
-            line_bot_api.reply_message(event.reply_token, TextMessage(text=GPT_response("你是誰啊？")))
+            res = GPT_response("你是誰啊？")
+            line_bot_api.reply_message(event.reply_token, TextMessage(res))
 
         #最新消息
         elif re.match('獲得最新消息',message):
