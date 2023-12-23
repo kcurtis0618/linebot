@@ -9,4 +9,4 @@ emoji
 pyshorteners 
 scipy
 gunicorn
-openai
+openai < 1.0.0

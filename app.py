@@ -1,6 +1,7 @@
 
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
+import openai
 import re
 from linebot import (
     LineBotApi, WebhookHandler
@@ -9,8 +10,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import *
-#引用其他檔案
-import ai_reply
+
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
@@ -34,6 +34,18 @@ end_template_message = TemplateSendMessage(
         ]
     )
 )
+
+# OPENAI API Key初始化設定
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
+def GPT_response(text):
+    # 接收回應
+    response = openai.Completion.create(model="gpt-3.5-turbo", prompt=text, temperature=0.5, max_tokens=500)
+    print(response)
+    # 重組回應
+    answer = response['choices'][0]['text'].replace('。','')
+    return answer
+
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -82,8 +94,7 @@ def handle_message(event):
             reply_message.append(button_template_message)
         
         elif re.match('1',message):
-            res = ai_reply.reply('你是誰啊？')
-            line_bot_api.reply_message(event.reply_token, TextMessage(text=res))
+            line_bot_api.reply_message(event.reply_token, TextMessage(text=GPT_response(message)))
 
         #最新消息
         elif re.match('獲得最新消息',message):
@@ -207,7 +218,7 @@ def handle_postback(event):
         reply_message.append(confirm_template_message)
     
     elif data == 'action=robot':
-        reply_message.append(TextMessage(text=ai_reply.reply('你是誰啊？')))
+        reply_message.append(TextMessage(text=GPT_response(messages)))
         reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
 
 
