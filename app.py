@@ -97,7 +97,7 @@ def handle_message(event):
                     actions=[
                         PostbackAction(label='填寫會員資料', data='action=register_member'),
                         MessageAction(label='最新消息', text='獲得最新消息'),
-                        MessageAction(label='我想與機器人對話', text='你好～'),
+                        PostbackAction(label='我想與機器人對話', data='action=robot'),
                     ]
                 )
             )
@@ -175,6 +175,11 @@ def handle_message(event):
             )
             reply_message.append(carousel_template_message)
             reply_message.append(end_template_message)
+
+    elif user_state[user_id]["state"] == "Robot":
+        if re.match('謝謝',message):
+            reply_message.append(TextMessage(text = '感謝您的使用，希望這些對您有幫助～'))
+            reply_message.append(end_template_message)
         else:
             reply_text = GPT_response(message)
             if reply_text.strip():  # 檢查回文是否為空
@@ -182,7 +187,6 @@ def handle_message(event):
             else:
                 # 處理空回文的情況，例如記錄錯誤、發送預設消息等
                 print("Received an empty response from GPT-3.")
-    
     #填寫會員資料
     elif user_state[user_id]["state"] == "Member":
         # 收集會員資料的對話流程
@@ -232,8 +236,8 @@ def handle_postback(event):
         reply_message.append(confirm_template_message)
     
     elif data == 'action=robot':
-        reply_message.append(TextMessage(text=GPT_response(messages)))
-        reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
+        user_state[user_id]["state"] = "Robot"
+        reply_message.append(TextMessage(text="歡迎使用青少年服務ai機器人～\n有什麼任何問題都可以進行訊問!\n\n若要結束使用請輸入「謝謝」\n就可以中斷對談了～"))
 
 
     elif data == 'action=後悔填寫':
