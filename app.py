@@ -10,7 +10,7 @@ from linebot.exceptions import (
 from linebot.models import *
 
 #############################
-import openai
+import openai 
 import re
 import os
 #############################
@@ -42,12 +42,17 @@ end_template_message = TemplateSendMessage(
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def GPT_response(text):
-    # 接收回應
-    response = openai.Completion.create(model="gpt-3.5-turbo", prompt=text, temperature=0.5, max_tokens=500)
-    print(response)
-    # 重組回應
-    answer = response['choices'][0]['text'].replace('。','')
-    return answer
+    client = openai.OpenAI()
+
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": text}  # 將您的自行輸入字串放在這裡
+
+    ]
+    )
+    return response
 
 
 # 監聽所有來自 /callback 的 Post Request
