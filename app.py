@@ -45,14 +45,22 @@ def GPT_response(text):
     client = openai.OpenAI()
 
     response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": text}  # 將您的自行輸入字串放在這裡
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": text}
         ]
     )
     
-    response_text = response['choices'][0]['message']['content']
+    # 將 ChatCompletion 對象轉換為字典
+    response_dict = response.to_dict() if hasattr(response, 'to_dict') else {}
+
+    # 嘗試從轉換後的字典中提取所需的回應文本
+    try:
+        response_text = response_dict.get('choices', [{}])[0].get('message', {}).get('content', "Sorry, I couldn't generate a response.")
+    except (IndexError, KeyError, TypeError):
+        response_text = "Sorry, there was an error processing the response."
+
     return response_text
 
 
