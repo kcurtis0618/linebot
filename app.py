@@ -1,8 +1,6 @@
 
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
-import openai
-import re
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -11,6 +9,11 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 
+#############################
+import openai
+import re
+import os
+#############################
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
