@@ -178,6 +178,7 @@ def handle_message(event):
 
     elif user_state[user_id]["state"] == "Robot":
         if re.match('謝謝',message):
+            user_state[user_id]["state"] = "Normal" #將狀態調回正常狀態
             reply_message.append(TextMessage(text = '感謝您的使用，希望這些對您有幫助～'))
             reply_message.append(end_template_message)
         else:
