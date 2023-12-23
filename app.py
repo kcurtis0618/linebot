@@ -97,19 +97,11 @@ def handle_message(event):
                     actions=[
                         PostbackAction(label='填寫會員資料', data='action=register_member'),
                         MessageAction(label='最新消息', text='獲得最新消息'),
-                        PostbackAction(label='我想與機器人對話', data='action=robot'),
+                        MessageAction(label='我想與機器人對話', text='你好～'),
                     ]
                 )
             )
             reply_message.append(button_template_message)
-        
-        elif re.match('1',message):
-            reply_text = GPT_response("你是誰啊？")
-            if reply_text.strip():  # 檢查回文是否為空
-                line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_text))
-            else:
-                # 處理空回文的情況，例如記錄錯誤、發送預設消息等
-                print("Received an empty response from GPT-3.")
 
 
         #最新消息
@@ -202,7 +194,13 @@ def handle_message(event):
             user_state[user_id]["workflow"] = 0
             reply_message.append(end_template_message)
 
-
+    else:
+        reply_text = GPT_response(message)
+        if reply_text.strip():  # 檢查回文是否為空
+            line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_text))
+        else:
+            # 處理空回文的情況，例如記錄錯誤、發送預設消息等
+            print("Received an empty response from GPT-3.")
 
     #最後輸出
     if reply_message:
@@ -241,7 +239,6 @@ def handle_postback(event):
     elif data == 'action=後悔填寫':
         user_state[user_id]["state"] = "Normal"
         reply_message.append(end_template_message)#在對話結束之後要加上是否繼續使用服務的按鈕
-
 
     
     if reply_message:
