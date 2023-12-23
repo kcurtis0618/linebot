@@ -175,7 +175,13 @@ def handle_message(event):
             )
             reply_message.append(carousel_template_message)
             reply_message.append(end_template_message)
-
+        else:
+            reply_text = GPT_response(message)
+            if reply_text.strip():  # 檢查回文是否為空
+                line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_text))
+            else:
+                # 處理空回文的情況，例如記錄錯誤、發送預設消息等
+                print("Received an empty response from GPT-3.")
     
     #填寫會員資料
     elif user_state[user_id]["state"] == "Member":
@@ -194,13 +200,7 @@ def handle_message(event):
             user_state[user_id]["workflow"] = 0
             reply_message.append(end_template_message)
 
-    else:
-        reply_text = GPT_response(message)
-        if reply_text.strip():  # 檢查回文是否為空
-            line_bot_api.reply_message(event.reply_token, TextMessage(text=reply_text))
-        else:
-            # 處理空回文的情況，例如記錄錯誤、發送預設消息等
-            print("Received an empty response from GPT-3.")
+
 
     #最後輸出
     if reply_message:
