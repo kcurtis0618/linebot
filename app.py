@@ -49,10 +49,12 @@ def GPT_response(text):
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": text}  # 將您的自行輸入字串放在這裡
-
-    ]
+        ]
     )
-    return response
+    # 提取回應中的文本部分
+    response_text = response['choices'][0]['message']['content'] if response['choices'] else "Sorry, I couldn't generate a response."
+
+    return response_text
 
 
 # 監聽所有來自 /callback 的 Post Request
