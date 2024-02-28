@@ -37,8 +37,8 @@ def linebot():
     # 獲取請求體和簽名
     body = request.get_data(as_text=True)
     signature = request.headers['X-Line-Signature']
-    json_data = json.loads(body)
-    print(json_data)
+    # json_data = json.loads(body)
+    # print(json_data)
     try:
         # 處理請求體
         events = handler.parser.parse(body, signature)
