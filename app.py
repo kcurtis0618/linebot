@@ -48,8 +48,8 @@ def linebot():
             if event.type == 'message' and event.message.type == 'text':
                 user_id = event.source.user_id
                 received_msg = event.message.text
-                msg = json_data['events'][0]['message']['text'] + '.'
-                user = json_data["events"][0]["source"]["userId"]
+                # msg = json_data['events'][0]['message']['text'] + '.'
+                # user = json_data["events"][0]["source"]["userId"]
                 # 模擬的處理邏輯，這裡需要根據實際需求來填寫
                 reply_msg = f"i got your msg：{received_msg}"
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_msg))
