@@ -51,7 +51,7 @@ def linebot():
                 msg = json_data['events'][0]['message']['text'] + '.'
                 user = json_data["events"][0]["source"]["userId"]
                 # 模擬的處理邏輯，這裡需要根據實際需求來填寫
-                reply_msg = f"ai response：{GPT_response(received_msg)}"
+                reply_msg = f"i got your msg：{received_msg}"
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_msg))
                 print(f'{user_id}: {received_msg}')
 
