@@ -4,6 +4,7 @@ import os
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import TextSendMessage
+import openai
 
 app = Flask(__name__)
 
@@ -36,7 +37,8 @@ def linebot():
     # 獲取請求體和簽名
     body = request.get_data(as_text=True)
     signature = request.headers['X-Line-Signature']
-
+    json_data = json.loads(body)
+    print(json_data)
     try:
         # 處理請求體
         events = handler.parser.parse(body, signature)
@@ -46,12 +48,12 @@ def linebot():
             if event.type == 'message' and event.message.type == 'text':
                 user_id = event.source.user_id
                 received_msg = event.message.text
+                msg = json_data['events'][0]['message']['text'] + '.'
+                user = json_data["events"][0]["source"]["userId"]
                 # 模擬的處理邏輯，這裡需要根據實際需求來填寫
-                reply_msg = f"收到了：{received_msg}"
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text=reply_msg)
-                )
+                reply_msg = f"ai response：{GPT_response(received_msg)}"
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text=reply_msg))
+                print(f'{user_id}: {received_msg}')
 
     except InvalidSignatureError:
         abort(400)
